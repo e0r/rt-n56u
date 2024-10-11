@@ -1,6 +1,6 @@
-![CI](https://github.com/hanwckf/rt-n56u/workflows/CI/badge.svg)
-![GitHub All Releases](https://img.shields.io/github/downloads/hanwckf/rt-n56u/total)
-[![release](https://img.shields.io/github/release/hanwckf/rt-n56u.svg)](https://github.com/hanwckf/rt-n56u/releases)
+![CI](https://github.com/e0r/rt-n56u/workflows/CI/badge.svg)
+![GitHub All Releases](https://img.shields.io/github/downloads/e0r/rt-n56u/total)
+[![release](https://img.shields.io/github/release/e0r/rt-n56u.svg)](https://github.com/e0r/rt-n56u/releases)
 
 # README #
 padavan端口聚合，让7620不带千兆芯片的百兆路由器用上200M-300M网络
