@@ -5,32 +5,57 @@
 # README #
 padavan端口聚合，让7620不带千兆芯片的百兆路由器用上200M-300M网络
 首先fork这个代码:https://github.com/hanwckf/rt-n56u
+
 trunk/configs/boards/PSG1208/kernel-3.4.x.config  这个文件的# CONFIG_BONDING is not set改成CONFIG_BONDING=y，把聚合功能加进内核里
+
 trunk/user/shared/netutils.c  这个文件的return nvram_safe_get(strcat_r(prefix, "ifname", tmp));改成return "bond0";这是把PPPOE的对象从eth2.2改成bond0
+
 也可以改成这样return (nvram_get_int("BONDING")==1)? "bond0" :nvram_safe_get(strcat_r(prefix, "ifname", tmp));通过NVRAM来确实PPPOE的对象是eth2.2还是bond0，我这里直接写死bond0
+
 这是改好的项目，K1直接Actions编译，其他型号需要改一下rt-n56u/.github/workflows/CI.yml
+
 第三十行targets: "PSG1208"
 
 然后在启动后脚本里加上：
+
 #原WAN变为LAN，即eth2.1
+
 switch  vlan set 0 1 00001011 0 0 ----u-tt
+
 switch  vlan set 1 2 10000011 0 0 u-----tt
+
 switch  vlan set 2 3 01000011 0 0 -u----tt
+
 switch  vlan set 3 4 00100011 0 0 --u---tt
+
 switch  pvid 0 2
+
 switch  pvid 1 3
+
 switch  pvid 2 4
+
 switch  pvid 4 1
+
 #eth2.2已经自动创建
+
 ip link add link eth2 name eth2.3 type vlan id 3
+
 ip link add link eth2 name eth2.4 type vlan id 4
+
 ip link set eth2.2 down
+
 ip link set eth2.3 down
+
 ip link set eth2.4 down
+
 ifconfig bond0 10.0.0.172 netmask 255.255.255.0 up
+
 ip link set eth2.2 master bond0
+
 ip link set eth2.3 master bond0
+
 ip link set eth2.4 master bond0
+
 
 
 改好后要保存内部存储到闪存，否则重启丢失。
@@ -43,9 +68,11 @@ K1这机器2016年初用139买的，实际应该是不用钱
 
 
 设置硬件 NAT 加速:        Offload TCP/UDP for LAN/WLAN
+
 单线程只能跑到100M，用IDM多线程能跑满200M，测速也能跑满
 
 设置硬件 NAT 加速:        Offload TCP/UDP for LAN
+
 单线程也能跑满200M，不过CPU占用非常高
 
 猜测本来只有100M网口，固件里HWNAT没有预留更高速度，得研究一下看看怎么改代码才能完美驱动HWNAT
